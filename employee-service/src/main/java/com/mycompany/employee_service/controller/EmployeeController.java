@@ -2,6 +2,7 @@ package com.mycompany.employee_service.controller;
 
 import com.mycompany.employee_service.model.Employee;
 import com.mycompany.employee_service.repository.EmployeeRepository;
+import com.mycompany.employee_service.service.EmployeeService;
 import com.mycompany.employee_service.service.IEmployeeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,7 @@ import java.util.List;
 @RequestMapping("/api/v1/employees")
 public class EmployeeController {
 
-    private final IEmployeeService employeeRepository;
+    private final EmployeeService employeeRepository;
 
     @GetMapping
     public ResponseEntity<List<Employee>> findAll(){
