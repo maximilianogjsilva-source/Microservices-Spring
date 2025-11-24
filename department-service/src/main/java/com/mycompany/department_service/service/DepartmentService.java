@@ -1,8 +1,8 @@
 package com.mycompany.department_service.service;
 
-import com.mycompany.department_service.client.EmployeeClient;
 import com.mycompany.department_service.model.Department;
 import com.mycompany.department_service.repository.DepartmentRepository;
+import com.mycompany.department_service.service.interfaces.IDepartmentService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,17 +14,17 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class DepartmentService implements IDepartmentService{
+public class DepartmentService implements IDepartmentService {
 
     private final DepartmentRepository departmentRepository;
 
-    private final EmployeeClient employeeClient;
+    private final EmployeeService employeeService;
 
     @Override
     @CircuitBreaker(name = "department-service", fallbackMethod = "fallbackListAll")
     public List<Department> listAll() {
         return departmentRepository.findAll().stream().peek(department ->
-                department.setEmployees( employeeClient.findAllbyDepartmentId(department.getId()) )
+                department.setEmployees( employeeService.findAllbyDepartmentId(department.getId()) )
         ).toList();
     }
 
@@ -32,7 +32,7 @@ public class DepartmentService implements IDepartmentService{
     @CircuitBreaker(name = "department-service", fallbackMethod = "fallbackFindById")
     public Optional<Department> findById(Long id) {
         return departmentRepository.findById(id).map(department -> {
-            department.setEmployees(employeeClient.findAllbyDepartmentId(id));
+            department.setEmployees(employeeService.findAllbyDepartmentId(id));
             return department;
         });
     }

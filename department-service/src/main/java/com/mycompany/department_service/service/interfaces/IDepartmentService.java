@@ -1,4 +1,4 @@
-package com.mycompany.department_service.service;
+package com.mycompany.department_service.service.interfaces;
 
 import com.mycompany.department_service.model.Department;
 
