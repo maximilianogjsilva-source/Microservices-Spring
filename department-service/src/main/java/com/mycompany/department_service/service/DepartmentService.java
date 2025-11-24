@@ -3,7 +3,9 @@ package com.mycompany.department_service.service;
 import com.mycompany.department_service.client.EmployeeClient;
 import com.mycompany.department_service.model.Department;
 import com.mycompany.department_service.repository.DepartmentRepository;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,6 +13,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DepartmentService implements IDepartmentService{
 
     private final DepartmentRepository departmentRepository;
@@ -18,6 +21,7 @@ public class DepartmentService implements IDepartmentService{
     private final EmployeeClient employeeClient;
 
     @Override
+    @CircuitBreaker(name = "department-service", fallbackMethod = "fallbackListAll")
     public List<Department> listAll() {
         return departmentRepository.findAll().stream().peek(department ->
                 department.setEmployees( employeeClient.findAllbyDepartmentId(department.getId()) )
@@ -25,6 +29,7 @@ public class DepartmentService implements IDepartmentService{
     }
 
     @Override
+    @CircuitBreaker(name = "department-service", fallbackMethod = "fallbackFindById")
     public Optional<Department> findById(Long id) {
         return departmentRepository.findById(id).map(department -> {
             department.setEmployees(employeeClient.findAllbyDepartmentId(id));
@@ -48,6 +53,16 @@ public class DepartmentService implements IDepartmentService{
     public Optional<Department> delete(Long id) {
         return departmentRepository.findById(id).stream()
                 .peek(departmentRepository::delete).findFirst();
+    }
+
+    private List<Department> fallbackListAll(Throwable ex){
+        log.error("Department service is unavailable with error {}", ex.getMessage());
+        return departmentRepository.findAll();
+    }
+
+    private Optional<Department> fallbackFindById(Long id, Throwable ex){
+        log.error("Department service is unavailable findById {}, with error {}", id, ex.getMessage() );
+        return departmentRepository.findById(id);
     }
 
 }
