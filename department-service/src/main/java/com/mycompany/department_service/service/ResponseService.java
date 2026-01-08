@@ -4,7 +4,6 @@ import com.mycompany.department_service.http.response.DepartmentAndEmployees;
 import com.mycompany.department_service.model.Department;
 import com.mycompany.department_service.service.interfaces.IDepartmentService;
 import com.mycompany.department_service.service.interfaces.IResponseService;
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

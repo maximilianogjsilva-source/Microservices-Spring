@@ -26,6 +26,7 @@ management:
     sampling:
       probability: 1.0
   health:
+
   endpoints:
     web:
       exposure:

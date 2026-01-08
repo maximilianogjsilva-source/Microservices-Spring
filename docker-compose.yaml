@@ -52,6 +52,7 @@ services:
   employee-service:
     build: ./employee-service/
     environment:
+      SPRING_CONFIG_HOST: http://config-server:8088
       EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://service-registry:8761/eureka/
       DB_URL: jdbc:mysql://employee_db:3306/employee?createDatabaseIfNotExist=true&serverTimezone=UTC
       DB_USER: mysqluser
@@ -67,6 +68,7 @@ services:
   department-service:
     build: ./department-service/
     environment:
+      SPRING_CONFIG_HOST: http://config-server:8088
       EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://service-registry:8761/eureka/
       DB_URL: jdbc:postgresql://department_db:5432/departments
       DB_USER: postgreuser
@@ -82,6 +84,7 @@ services:
   api-gateway:
     build: ./api-gateway/
     environment:
+      SPRING_CONFIG_HOST: http://config-server:8088
       EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://service-registry:8761/eureka/
     ports:
       - "8060:8060"
