@@ -3,6 +3,7 @@ package com.mycompany.employee_service.service;
 import com.mycompany.employee_service.model.Employee;
 import com.mycompany.employee_service.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,7 +13,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class EmployeeService implements IEmployeeService{
 
-    private final EmployeeRepository employeeRepository;
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     @Override
     public List<Employee> listAll() {
@@ -33,20 +35,25 @@ public class EmployeeService implements IEmployeeService{
 
     @Override
     public Optional<Employee> create(Employee employee) {
-        return employeeRepository.save(employee);
+        return Optional.of(employeeRepository.save(employee));
     }
 
     @Override
     public Optional<Employee> update(Long id, Employee employee) {
-        return employeeRepository.findById(id)
-                .map(e -> employeeRepository.save(employee))
-                .orElseThrow();
+        var emplo = Employee.builder()
+                .id(id)
+                .departmentId(employee.getDepartmentId())
+                .name(employee.getName())
+                .position(employee.getPosition())
+                .build();
+        return Optional.of(employeeRepository.save(emplo));
     }
 
     @Override
     public Optional<Employee> delete(Long id) {
-        return employeeRepository.findById(id).stream()
-                .peek( employeeRepository::delete )
-                .findFirst();
+        return employeeRepository.findById(id).map((employee)->{
+            employeeRepository.delete(employee);
+            return employee;
+        });
     }
 }

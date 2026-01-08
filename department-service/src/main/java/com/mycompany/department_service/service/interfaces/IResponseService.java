@@ -6,15 +6,15 @@ import com.mycompany.department_service.model.Department;
 import java.util.List;
 import java.util.Optional;
 
-public interface IDepartmentService {
+public interface IResponseService {
 
-    List<Department> listAll();
+    List<DepartmentAndEmployees> listAll();
 
-    Optional<Department> findById(Long id);
+    Optional<DepartmentAndEmployees> findById(Long id);
 
-    Optional<Department> create(Department department);
+    Optional<DepartmentAndEmployees> create(Department department);
 
-    Optional<Department> update(Department department);
+    Optional<DepartmentAndEmployees> update(Department department);
 
     Optional<Department> delete(Long id);
 
